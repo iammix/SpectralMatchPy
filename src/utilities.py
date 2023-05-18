@@ -5,11 +5,11 @@ from numpy import ndarray
 __all__ = ['ec8_rs']
 
 
-
-
 def ec8_rs(agr: int, ground_type: str, resp_type: int, orientation: str = 'horizontal', importance_class: int = 2,
            damping: float = 5, periods: List = None) -> tuple[Any, ndarray]:
-    """Calculates the Design Spectrum of Eurocode 8 given the corresponding inputs
+    """
+    Calculates the Design Spectrum of Eurocode 8 given the corresponding inputs [CT].
+
     Parameters
     ----------
     agr : int
@@ -28,10 +28,40 @@ def ec8_rs(agr: int, ground_type: str, resp_type: int, orientation: str = 'horiz
 
     Returns
     -------
+    periods : List
+        List of periods
+    PGA : List
+        List of Peak Ground Acceleration corresponding to the period list
 
 
+    Examples
+    --------
+    >>> np.fft.fft(np.exp(2j * np.pi * np.arange(8) / 8))
+    array([-2.33486982e-16+1.14423775e-17j,  8.00000000e+00-1.25557246e-15j,
+            2.33486982e-16+2.33486982e-16j,  0.00000000e+00+1.22464680e-16j,
+           -1.14423775e-17+2.33486982e-16j,  0.00000000e+00+5.20784380e-16j,
+            1.14423775e-17+1.14423775e-17j,  0.00000000e+00+1.22464680e-16j])
 
+    In this example, real input has an FFT which is Hermitian, i.e., symmetric
+    in the real part and anti-symmetric in the imaginary part, as described in
+    the `numpy.fft` documentation:
+
+    >>> import matplotlib.pyplot as plt
+    >>> t = np.arange(256)
+    >>> sp = np.fft.fft(np.sin(t))
+    >>> freq = np.fft.fftfreq(t.shape[-1])
+    >>> plt.plot(freq, sp.real, freq, sp.imag)
+    [<matplotlib.lines.Line2D object at 0x...>, <matplotlib.lines.Line2D object at 0x...>]
+    >>> plt.show()
+
+
+    References
+    ----------
+    .. [CT] Cooley, James W., and John W. Tukey, 1965, "An algorithm for the
+            machine calculation of complex Fourier series," *Math. Comput.*
+            19: 297-301.
     """
+
     importance_factor = {1: 0.8,
                          2: 1,
                          3: 1.2,
