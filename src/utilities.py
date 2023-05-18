@@ -1,8 +1,98 @@
 import numpy as np
 from typing import List, Tuple, Any
 from numpy import ndarray
+import matplotlib.pyplot as plt
 
-__all__ = ['ec8_rs']
+__all__ = ['ec8_rs', 'processNGAfile', 'processTwoCfile', 'processOneCfile']
+
+
+def processTwoCfile(filepath: str, scalefactor: float = 1) -> Tuple[List, List]:
+    """
+    This function process acceleration history data saved in Two column format.
+
+
+    Parameters
+    ----------
+    filepath : str
+        File path in order to read the file data
+    scalefactor : float
+        Scale factor in which the acceleration values will be multiplied.
+
+    Returns
+    -------
+    time : List
+        A list of time intervals
+    accel : List
+        A list of acceleration data points
+    """
+    data = np.loadtxt(filepath)
+    return data[:, 0], data[:, 1] * scalefactor
+
+
+def processOneCfile(filepath: str, dt: float, scalefactor: float = 1) -> Tuple[List, List]:
+    """
+    This function process acceleration history data saved in One column format.
+
+    Parameters
+    ----------
+    filepath : str
+        File path in order to read the file data
+    dt : float
+        Time interval of the acceleration history data
+    scalefactor : float
+        Scale factor in which the acceleration values will be multiplied.
+
+    Returns
+    -------
+    time : List
+        A list of time intervals
+    accel : List
+        A list of acceleration data points
+
+    """
+    with open(filepath, 'r') as file:
+        lines = file.readlines()
+    file.close()
+    accel = [float(line.split('\n')[0]) * scalefactor for line in lines]
+    time = [i * dt for i in range(len(accel))]
+    return time, accel
+
+
+def processNGAfile(filepath, scalefactor: float = 1):
+    """
+    This function process acceleration history for NGA data file (.AT2 format)
+    to a single column value and return the total number of data points and time interval of the recording.
+
+    Parameters
+    ----------
+    filepath : str
+        File path in order to read the file data
+    scalefactor : float
+        Scale factor in which the acceleration values will be multiplied.
+
+    Returns
+    -------
+    time : List
+        A list of time intervals
+    accel : List
+        A list of acceleration data points
+    """
+    with open(filepath, 'r') as file:
+        lines = file.readlines()
+    file.close()
+    accel = []
+    time = []
+    dt_line = lines[3].split(' ')
+    dt_line = [item for item in dt_line if item != '']
+    dt = float(dt_line[1])
+    for time_counter, value in enumerate(lines[4:]):
+        data = value.split(' ')
+        data = [item for item in data if item != '']
+        for dat in data:
+            accel.append(float(dat) * scalefactor)
+            time.append(dt * time_counter)
+            time_counter += 1
+    return time, accel
 
 
 def ec8_rs(agr: int, ground_type: str, resp_type: int, orientation: str = 'horizontal', importance_class: int = 2,
