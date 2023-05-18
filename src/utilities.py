@@ -1,6 +1,37 @@
 import numpy as np
+from typing import List, Tuple, Any
+from numpy import ndarray
 
-def ec8_rs(agr, ground_type, resp_type, orientation='horizontal', importance_class=2, damping=5, periods=None):
+__all__ = ['ec8_rs']
+
+
+
+
+def ec8_rs(agr: int, ground_type: str, resp_type: int, orientation: str = 'horizontal', importance_class: int = 2,
+           damping: float = 5, periods: List = None) -> tuple[Any, ndarray]:
+    """Calculates the Design Spectrum of Eurocode 8 given the corresponding inputs
+    Parameters
+    ----------
+    agr : int
+        Peak Ground Acceleration
+    ground_type : str
+        Ground type. Selection between A, B, C, D
+    resp_type : int
+        Type of spectrum. Selection between 1 or 2
+    orientation : str
+        horizontal orientation is only implemented
+    importance_class : int
+        Importance class
+    damping : float
+        Damping ration for the design spectrum generation
+    periods
+
+    Returns
+    -------
+
+
+
+    """
     importance_factor = {1: 0.8,
                          2: 1,
                          3: 1.2,
