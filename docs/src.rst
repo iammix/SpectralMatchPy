@@ -1,10 +1,4 @@
-src package
-===========
-
-Submodules
-----------
-
-src.utilities module
+utilities
 --------------------
 
 .. automodule:: src.utilities
