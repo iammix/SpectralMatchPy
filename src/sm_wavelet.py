@@ -2,6 +2,7 @@ import numpy as np
 from scipy import signal
 from numpy.fft import fft, ifft
 from scipy import integrate
+import utilities
 
 
 def sm_wavelet(t, omega, zeta):

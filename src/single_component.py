@@ -20,6 +20,8 @@ def single_component(s, fs, dso, To, T1=0, T2=0, zi=0.05, NS=100, blcorrection=T
     blcorrection
     plots
     """
+
+
     n = np.size(s)
     dt = 1 / fs
     t = np.linspace(0, (n-1) * dt, n)

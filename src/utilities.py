@@ -85,14 +85,15 @@ def processNGAfile(filepath, scalefactor: float = 1):
     dt_line = lines[3].split(' ')
     dt_line = [item for item in dt_line if item != '']
     dt = float(dt_line[1])
-    for time_counter, value in enumerate(lines[4:]):
+    time_counter = 0
+    for value in lines[4:]:
         data = value.split(' ')
         data = [item for item in data if item != '']
         for dat in data:
             accel.append(float(dat) * scalefactor)
             time.append(dt * time_counter)
             time_counter += 1
-    return time, accel
+    return time, accel, dt
 
 
 def ec8_rs(agr: int, ground_type: str, resp_type: int, orientation: str = 'horizontal', importance_class: int = 2,
