@@ -44,11 +44,14 @@ class MainUI(QtWidgets.QMainWindow):
         self.pushButton_2.clicked.connect(self.plot_ec8)
         self.pushButton_3.clicked.connect(self.fit)
 
-
     def _gotoabout(self):
         self.gotoabout = AboutPage()
         self.gotoabout.show()
+
     def fit(self):
+        # TODO Export fitted data
+        # labels: enhancement
+        # assignees: iammix
         fs = 1 / (self.time[1] - self.time[0])
         ccs, rms, misfit, cvel, cdespl, PSAccs, PSAs, T, sf, fig1 = reqpy.REQPY_single(np.array(self.accel), fs,
                                                                                        self.ds_pga, self.ds_periods,
@@ -78,6 +81,10 @@ class MainUI(QtWidgets.QMainWindow):
         sc.show()
 
     def loadEqFile_and_plot(self):
+        # TODO Read different file formats
+        # labels: enhancement
+        # assignees: iammix
+
         eq_loader = QtWidgets.QFileDialog()
         self.eq_filePath = eq_loader.getOpenFileNames(self, 'Load File')
         plot_layout = self.verticalLayout
