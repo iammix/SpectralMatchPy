@@ -53,6 +53,16 @@ class MainUI(QtWidgets.QMainWindow):
                 vel_file.write(f'{self.time[index]} {item}\n')
         vel_file.close()
 
+        with open('disp.txt', 'w') as disp_file:
+            for index, item in enumerate(self.cdespl):
+                disp_file.write(f'{self.time[index]} {item}\n')
+        disp_file.close()
+
+        with open('accel.txt', 'w') as accel_file:
+            for index, item in enumerate(self.PSAccs):
+                accel_file.write(f'{self.time[index]} {item}\n')
+        accel_file.close()
+
     def exit_program(self):
         sys.exit()
     def _gotoabout(self):
