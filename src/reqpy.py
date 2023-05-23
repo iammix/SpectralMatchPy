@@ -119,15 +119,15 @@ def REQPYrotdnn(s1, s2, fs, dso, To, nn, T1=0, T2=0, zi=0.05, nit=15, NS=100,
     n = np.size(s1)
     theta = np.arange(0, 180, 1)
 
-    n1 = np.size(s1);
-    n2 = np.size(s2);
+    n1 = np.size(s1)
+    n2 = np.size(s2)
     n = np.min((n1, n2))
-    s1 = s1[:n];
+    s1 = s1[:n]
     s2 = s2[:n]
 
     dt = 1 / fs  # time step
     t = np.linspace(0, (n - 1) * dt, n)  # time vector
-    FF1 = min(4 / (n * dt), 0.1);
+    FF1 = min(4 / (n * dt), 0.1)
     FF2 = 1 / (2 * dt)  # defines frequency range for CWT decomposition
 
     Tsortindex = np.argsort(To)
@@ -138,7 +138,7 @@ def REQPYrotdnn(s1, s2, fs, dso, To, nn, T1=0, T2=0, zi=0.05, nit=15, NS=100,
 
     # Perform Continuous Wavelet Decomposition:
 
-    omega = pi;
+    omega = pi
     zeta = 0.05  # wavelet function parameters
     freqs = np.geomspace(FF2, FF1, NS)  # frequencies vector
     T = 1 / freqs  # periods vector
@@ -170,9 +170,9 @@ def REQPYrotdnn(s1, s2, fs, dso, To, nn, T1=0, T2=0, zi=0.05, nit=15, NS=100,
     nTlocs = np.size(Tlocs)
     sf = np.sum(ds[Tlocs]) / np.sum(PSArotnnor[Tlocs])  # initial scaling factor
 
-    sc1 = sf * sr1;
+    sc1 = sf * sr1
     D1 = sf * D1
-    sc2 = sf * sr2;
+    sc2 = sf * sr2
     D2 = sf * D2
 
     # Iterative Process:
@@ -264,7 +264,7 @@ def REQPYrotdnn(s1, s2, fs, dso, To, nn, T1=0, T2=0, zi=0.05, nit=15, NS=100,
         plt.plot(t, scc1, linewidth=1, color='navy')
         plt.ylim(-alim, alim)
         plt.ylabel('acc. [g]')
-        frame1 = plt.gca();
+        frame1 = plt.gca()
         frame1.axes.xaxis.set_ticklabels([])
 
         plt.subplot(323)
@@ -272,37 +272,37 @@ def REQPYrotdnn(s1, s2, fs, dso, To, nn, T1=0, T2=0, zi=0.05, nit=15, NS=100,
         plt.plot(t, cvel1, linewidth=1, color='navy')
         plt.ylim(-vlim, vlim)
         plt.ylabel('vel./g')
-        frame1 = plt.gca();
+        frame1 = plt.gca()
         frame1.axes.xaxis.set_ticklabels([])
 
         plt.subplot(325)
         plt.plot(t, sf1 * d1, linewidth=1, color='darkgray')
         plt.plot(t, cdisp1, linewidth=1, color='navy')
         plt.ylim(-dlim, dlim)
-        plt.ylabel('displ./g');
+        plt.ylabel('displ./g')
         plt.xlabel('t [s]')
 
         plt.subplot(322)
         plt.plot(t, sf2 * s2, linewidth=1, color='darkgray')
         plt.plot(t, scc2, linewidth=1, color='navy')
         plt.ylim(-alim, alim)
-        frame1 = plt.gca();
-        frame1.axes.xaxis.set_ticklabels([]);
+        frame1 = plt.gca()
+        frame1.axes.xaxis.set_ticklabels([])
         frame1.axes.yaxis.set_ticklabels([])
 
         plt.subplot(324)
         plt.plot(t, sf2 * v2, linewidth=1, color='darkgray')
         plt.plot(t, cvel2, linewidth=1, color='navy')
         plt.ylim(-vlim, vlim)
-        frame1 = plt.gca();
-        frame1.axes.xaxis.set_ticklabels([]);
+        frame1 = plt.gca()
+        frame1.axes.xaxis.set_ticklabels([])
         frame1.axes.yaxis.set_ticklabels([])
 
         plt.subplot(326)
         plt.plot(t, sf2 * d2, linewidth=1, color='darkgray', label='Scaled')
         plt.plot(t, cdisp2, linewidth=1, color='navy', label='Matched')
         plt.ylim(-dlim, dlim)
-        frame1 = plt.gca();
+        frame1 = plt.gca()
         frame1.axes.yaxis.set_ticklabels([])
         plt.xlabel('t [s]')
         plt.figlegend(loc='lower center', ncol=2)
@@ -322,14 +322,14 @@ def REQPYrotdnn(s1, s2, fs, dso, To, nn, T1=0, T2=0, zi=0.05, nit=15, NS=100,
         plt.legend((': target', ': unscaled', ': scaled', ': matched'),
                    frameon=False, ncol=4, bbox_to_anchor=(0, 1),
                    loc='lower left')
-        plt.xlabel('T[s]');
+        plt.xlabel('T[s]')
         plt.ylabel('PSA RotDnn [g]')
 
     return (scc1, scc2, cvel1, cvel2, cdisp1, cdisp2, PSArotnn, PSArotnnor,
             T, meanefin, rmsefin)
 
 
-def REQPY_single(s, fs, dso, To, T1=0, T2=0, zi=0.05, nit=30, NS=100, baseline=1, plots=1):
+def REQPY_single(s, fs, dso, To, T1=0, T2=0, zi=0.05, nit=30, NS=100, baseline=1, plots=1, progress_bar_object=None):
     '''
     REQPY_single - CWT based modification of a single component from
     a historic records to obtain spectrally equivalent acceleration series 
@@ -374,7 +374,7 @@ def REQPY_single(s, fs, dso, To, T1=0, T2=0, zi=0.05, nit=30, NS=100, baseline=1
     n = np.size(s)  # number of data points in seed record
     dt = 1 / fs  # time step
     t = np.linspace(0, (n - 1) * dt, n)  # time vector
-    FF1 = min(4 / (n * dt), 0.1);
+    FF1 = min(4 / (n * dt), 0.1)
     FF2 = 1 / (2 * dt)  # frequency range for CWT decomposition
 
     Tsortindex = np.argsort(To)
@@ -385,7 +385,7 @@ def REQPY_single(s, fs, dso, To, T1=0, T2=0, zi=0.05, nit=30, NS=100, baseline=1
 
     # Perform Continuous Wavelet Decomposition:
 
-    omega = pi;
+    omega = pi
     zeta = 0.05  # wavelet function parameters
     freqs = np.geomspace(FF2, FF1, NS)  # frequencies vector
     T = 1 / freqs  # periods vector
@@ -419,7 +419,7 @@ def REQPY_single(s, fs, dso, To, T1=0, T2=0, zi=0.05, nit=30, NS=100, baseline=1
     nTlocs = np.size(Tlocs)
     sf = np.sum(ds[Tlocs]) / np.sum(PSAs[Tlocs])  # initial scaling factor
 
-    sr = sf * sr;
+    sr = sf * sr
     D = sf * D
 
     # Iterative Process:
@@ -445,6 +445,7 @@ def REQPY_single(s, fs, dso, To, T1=0, T2=0, zi=0.05, nit=30, NS=100, baseline=1
         dif = np.abs(hPSAbc[Tlocs, m] - ds[Tlocs]) / ds[Tlocs]
         meane[m] = np.mean(dif) * 100
         rmse[m] = np.linalg.norm(dif) / np.sqrt(nTlocs) * 100
+        progress_bar_object.setValue((m/nit)*100)
 
     brloc = np.argmin(rmse)  # locates min error
     sc = ns[:, brloc]  # compatible record
@@ -457,7 +458,7 @@ def REQPY_single(s, fs, dso, To, T1=0, T2=0, zi=0.05, nit=30, NS=100, baseline=1
 
         CT = np.max(np.array([1, t[-1] / 20]))  # time to correct
         vel, despl, ccs, cvel, cdespl = basecorr(t, sc, CT)
-        kka = 1;
+        kka = 1
         flbc = True
 
         while any(np.isnan(ccs)):
@@ -467,9 +468,9 @@ def REQPY_single(s, fs, dso, To, T1=0, T2=0, zi=0.05, nit=30, NS=100, baseline=1
                 print('=' * 40)
                 print('**baseline correction failed**')
                 print('=' * 40)
-                flbc = False;
-                ccs = sc;
-                cvel = vel;
+                flbc = False
+                ccs = sc
+                cvel = vel
                 cdespl = despl
                 break
             vel, despl, ccs, cvel, cdespl = basecorr(t, sc, CTn)
@@ -505,21 +506,45 @@ def REQPY_single(s, fs, dso, To, T1=0, T2=0, zi=0.05, nit=30, NS=100, baseline=1
         sosc = sf * s
         velsc = integrate.cumtrapz(sosc, t, initial=0)
         desplsc = integrate.cumtrapz(velsc, t, initial=0)
-        fig = Figure(figsize=(4, 6.5))
-        ax1 = fig.add_subplot(311)
+        fig1 = Figure(figsize=(4, 6.5))
+        ax1 = fig1.add_subplot(311)
         ax1.plot(t, sosc, 'c', t, ccs, 'b')
         ax1.set_ylabel('acc. [g]')
-        ax2 = fig.add_subplot(312)
+        ax2 = fig1.add_subplot(312)
         ax2.plot(t, velsc, 'c', t, cvel, 'b')
         ax2.set_ylabel('vel./g')
-        ax3 = fig.add_subplot(313)
+        ax3 = fig1.add_subplot(313)
         ax3.plot(t, desplsc, 'c', t, cdespl, 'b')
         ax3.set_ylabel('displ./g')
         ax3.set_xlabel('time [s]')
         ax3.legend((': scaled', ': matched'), frameon=False, loc='upper right')
-        fig.tight_layout()
+        fig1.tight_layout()
 
-    return ccs, rmsefin, meanefin, cvel, cdespl, PSAccs, PSAs, T, sf, fig
+        limy = 1.06 * np.max([sf * PSAs, PSAccs])
+        auxx = [T1, T1, T2, T2, T1]
+        auxy = [0, limy, limy, 0, 0]
+        ds = np.interp(T, To, dso, left=np.nan, right=np.nan)
+        fig2 = Figure(figsize=(5.8, 6))
+        ax1 = fig2.add_subplot(111)
+        ax1.set_xscale('log')
+        ax1.plot(T, ds, color=[0.5, 0.5, 0.5], linewidth=3)
+        ax1.fill_between(auxx, auxy, color='skyblue', alpha=0.2)
+        ax1.set_xscale('log')
+        ax1.plot(T, PSAs, '-k')
+        ax1.set_xscale('log')
+        ax1.plot(T, sf * PSAs, '-c')
+        ax1.set_xscale('log')
+        ax1.plot(T, PSAccs, '-b')
+        ax1.set_xscale('log')
+        ax1.plot(auxx, auxy, color='Slateblue', alpha=0.6)
+        ax1.legend((': target', ': unscaled', ': scaled', ': matched'),
+                   frameon=True, ncol=2, bbox_to_anchor=(0, 1),
+                   loc='lower left')
+        ax1.set_xlabel('T[s]')
+        ax1.set_ylabel('PSA [g]')
+        fig2.tight_layout()
+
+    return ccs, rmsefin, meanefin, cvel, cdespl, PSAccs, PSAs, T, sf, fig1, fig2
 
 
 def zumontw(t, omega, zeta):

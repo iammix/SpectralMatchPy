@@ -40,10 +40,21 @@ class MainUI(QtWidgets.QMainWindow):
         uic.loadUi('../ui/main.ui', self)
 
         self.actionAbout.triggered.connect(self._gotoabout)
+        self.actionExit.triggered.connect(self.exit_program)
         self.pushButton.clicked.connect(self.loadEqFile_and_plot)
         self.pushButton_2.clicked.connect(self.plot_ec8)
         self.pushButton_3.clicked.connect(self.fit)
+        self.pushButton_4.clicked.connect(self.save_results_tab1)
 
+
+    def save_results_tab1(self):
+        with open('vel.txt', 'w') as vel_file:
+            for index, item in enumerate(self.cvel):
+                vel_file.write(f'{self.time[index]} {item}\n')
+        vel_file.close()
+
+    def exit_program(self):
+        sys.exit()
     def _gotoabout(self):
         self.gotoabout = AboutPage()
         self.gotoabout.show()
@@ -52,17 +63,23 @@ class MainUI(QtWidgets.QMainWindow):
         # TODO Export fitted data
         # labels: enhancement
         # assignees: iammix
+        self.progressBar.setValue(0)
         fs = 1 / (self.time[1] - self.time[0])
-        ccs, rms, misfit, cvel, cdespl, PSAccs, PSAs, T, sf, fig1 = reqpy.REQPY_single(np.array(self.accel), fs,
+        ccs, rms, misfit, self.cvel, self.cdespl, self.PSAccs, PSAs, T, sf, fig1, fig2 = reqpy.REQPY_single(np.array(self.accel), fs,
                                                                                        self.ds_pga, self.ds_periods,
                                                                                        T1=0, T2=0,
                                                                                        zi=float(self.lineEdit_3.text()),
                                                                                        nit=15, NS=100,
-                                                                                       baseline=1, plots=1)
-        plot_layout = self.verticalLayout_3
-        canvas = FigureCanvasQTAgg(fig1)
-        plot_layout.addWidget(canvas)
-        canvas.show()
+                                                                                       baseline=1, plots=1, progress_bar_object=self.progressBar)
+        plot_layout1 = self.verticalLayout_3
+        canvas1 = FigureCanvasQTAgg(fig1)
+        plot_layout1.addWidget(canvas1)
+        canvas1.show()
+
+        plot_layout2 = self.verticalLayout_4
+        canvas2 = FigureCanvasQTAgg(fig2)
+        plot_layout2.addWidget(canvas2)
+        canvas2.show()
 
     def plot_ec8(self):
         self.ds_periods, self.ds_pga = utilities.ec8_rs(float(self.lineEdit_2.text()), self.comboBox_2.currentText(),
@@ -87,18 +104,19 @@ class MainUI(QtWidgets.QMainWindow):
 
         eq_loader = QtWidgets.QFileDialog()
         self.eq_filePath = eq_loader.getOpenFileNames(self, 'Load File')
-        plot_layout = self.verticalLayout
-        eq_line_edit = self.lineEdit
-        sc = MplCanvas(self, width=10, height=4, dpi=60)
-        plot_layout = remove_widget_from_layout(plot_layout)
-        self.time, self.accel, self.dt = utilities.processNGAfile(self.eq_filePath[0][0])
-        eq_line_edit.setText(self.eq_filePath[0][0])
-        sc.axes.plot(self.time, self.accel, linewidth=0.5)
-        sc.axes.set_title('Earthquake')
-        sc.axes.set_xlabel('Time (sec)')
-        sc.axes.set_ylabel('Acceleration (g)')
-        plot_layout.addWidget(sc)
-        sc.show()
+        if len(self.eq_filePath[0]) != 0:
+            plot_layout = self.verticalLayout
+            eq_line_edit = self.lineEdit
+            sc = MplCanvas(self, width=10, height=4, dpi=60)
+            plot_layout = remove_widget_from_layout(plot_layout)
+            self.time, self.accel, self.dt = utilities.processNGAfile(self.eq_filePath[0][0])
+            eq_line_edit.setText(self.eq_filePath[0][0])
+            sc.axes.plot(self.time, self.accel, linewidth=0.5)
+            sc.axes.set_title('Earthquake')
+            sc.axes.set_xlabel('Time (sec)')
+            sc.axes.set_ylabel('Acceleration (g)')
+            plot_layout.addWidget(sc)
+            sc.show()
 
 
 class AboutPage(QDialog):
