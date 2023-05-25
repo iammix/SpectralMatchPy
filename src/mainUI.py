@@ -2,12 +2,13 @@ import os
 import sys
 import numpy as np
 from PyQt6 import QtWidgets, uic
-from PyQt6.QtWidgets import QWidget, QComboBox, QDialog, QFormLayout, QLineEdit
+from PyQt6.QtWidgets import QWidget, QComboBox, QDialog, QFormLayout, QLineEdit, QMessageBox
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 # from matplotlib.backends.qt_compat import QtWidgets
 from matplotlib.figure import Figure
 import utilities
 import reqpy
+
 
 
 def remove_widget_from_layout(layout):
@@ -45,7 +46,14 @@ class MainUI(QtWidgets.QMainWindow):
         self.pushButton_2.clicked.connect(self.plot_ec8)
         self.pushButton_3.clicked.connect(self.fit)
         self.pushButton_4.clicked.connect(self.save_results_tab1)
+        self.comboBox.currentTextChanged.connect(self._enable_dt)
+        self.lineEdit_4.setEnabled(False)
 
+    def _enable_dt(self):
+        if self.comboBox.currentText() == 'PEER NGA' or self.comboBox.currentText() == 'Two Columns':
+            self.lineEdit_4.setEnabled(False)
+        else:
+            self.lineEdit_4.setEnabled(True)
 
     def save_results_tab1(self):
         with open('vel.txt', 'w') as vel_file:
@@ -62,9 +70,18 @@ class MainUI(QtWidgets.QMainWindow):
             for index, item in enumerate(self.PSAccs):
                 accel_file.write(f'{self.time[index]} {item}\n')
         accel_file.close()
+        message_box = QMessageBox()
+        message_box.setWindowTitle("Info")
+        message_box.setText("Data Saved")
+        message_box.setIcon(QMessageBox.Icon.Information)
+        message_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+
+        # Show the message box and wait for the user's response
+        response = message_box.exec()
 
     def exit_program(self):
         sys.exit()
+
     def _gotoabout(self):
         self.gotoabout = AboutPage()
         self.gotoabout.show()
@@ -73,20 +90,26 @@ class MainUI(QtWidgets.QMainWindow):
         # TODO Export fitted data
         # labels: enhancement
         # assignees: iammix
+
+
+
         self.progressBar.setValue(0)
         fs = 1 / (self.time[1] - self.time[0])
-        ccs, rms, misfit, self.cvel, self.cdespl, self.PSAccs, PSAs, T, sf, fig1, fig2 = reqpy.REQPY_single(np.array(self.accel), fs,
-                                                                                       self.ds_pga, self.ds_periods,
-                                                                                       T1=0, T2=0,
-                                                                                       zi=float(self.lineEdit_3.text()),
-                                                                                       nit=15, NS=100,
-                                                                                       baseline=1, plots=1, progress_bar_object=self.progressBar)
+        ccs, rms, misfit, self.cvel, self.cdespl, self.PSAccs, PSAs, T, sf, fig1, fig2 = reqpy.REQPY_single(
+            np.array(self.accel), fs,
+            self.ds_pga, self.ds_periods,
+            T1=0, T2=10,
+            zi=float(self.lineEdit_3.text()),
+            nit=30, NS=100,
+            baseline=True, plots=True, progress_bar_object=self.progressBar)
         plot_layout1 = self.verticalLayout_3
+        plot_layout1 = remove_widget_from_layout(plot_layout1)
         canvas1 = FigureCanvasQTAgg(fig1)
         plot_layout1.addWidget(canvas1)
         canvas1.show()
 
         plot_layout2 = self.verticalLayout_4
+        plot_layout2 = remove_widget_from_layout(plot_layout2)
         canvas2 = FigureCanvasQTAgg(fig2)
         plot_layout2.addWidget(canvas2)
         canvas2.show()
@@ -119,7 +142,12 @@ class MainUI(QtWidgets.QMainWindow):
             eq_line_edit = self.lineEdit
             sc = MplCanvas(self, width=10, height=4, dpi=60)
             plot_layout = remove_widget_from_layout(plot_layout)
-            self.time, self.accel, self.dt = utilities.processNGAfile(self.eq_filePath[0][0])
+            if self.comboBox.currentText() == 'PEER NGA':
+                self.time, self.accel, self.dt = utilities.processNGAfile(self.eq_filePath[0][0])
+            elif self.comboBox.currentText() == 'One Column':
+                self.time, self.accel, self.dt = utilities.processOneCfile(self.eq_filePath[0][0])
+            elif self.comboBox.currentText() == 'Two Columns':
+                self.time, self.accel = utilities.processTwoCfile(self.eq_filePath[0][0])
             eq_line_edit.setText(self.eq_filePath[0][0])
             sc.axes.plot(self.time, self.accel, linewidth=0.5)
             sc.axes.set_title('Earthquake')

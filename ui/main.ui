@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,6 +19,9 @@
   <property name="windowIcon">
    <iconset>
     <normaloff>assets/spectrum.ico</normaloff>assets/spectrum.ico</iconset>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>false</bool>
@@ -55,7 +61,7 @@
        <rect>
         <x>130</x>
         <y>10</y>
-        <width>221</width>
+        <width>181</width>
         <height>22</height>
        </rect>
       </property>
@@ -63,8 +69,8 @@
      <widget class="QPushButton" name="pushButton">
       <property name="geometry">
        <rect>
-        <x>270</x>
-        <y>40</y>
+        <x>320</x>
+        <y>10</y>
         <width>75</width>
         <height>21</height>
        </rect>
@@ -85,6 +91,16 @@
       <item>
        <property name="text">
         <string>PEER NGA</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>One Column</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Two Columns</string>
        </property>
       </item>
      </widget>
@@ -167,7 +183,7 @@
      <widget class="QLineEdit" name="lineEdit_2">
       <property name="geometry">
        <rect>
-        <x>90</x>
+        <x>100</x>
         <y>90</y>
         <width>71</width>
         <height>22</height>
@@ -177,7 +193,7 @@
      <widget class="QComboBox" name="comboBox_2">
       <property name="geometry">
        <rect>
-        <x>90</x>
+        <x>100</x>
         <y>120</y>
         <width>71</width>
         <height>22</height>
@@ -207,7 +223,7 @@
      <widget class="QComboBox" name="comboBox_3">
       <property name="geometry">
        <rect>
-        <x>90</x>
+        <x>100</x>
         <y>150</y>
         <width>69</width>
         <height>22</height>
@@ -388,16 +404,35 @@
        <number>0</number>
       </property>
      </widget>
-    </widget>
-    <widget class="QWidget" name="tab_2">
-     <attribute name="title">
-      <string>2 Component Fit</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="tab_3">
-     <attribute name="title">
-      <string>Multiple Component Fit</string>
-     </attribute>
+     <widget class="QLineEdit" name="lineEdit_4">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>330</x>
+        <y>40</y>
+        <width>61</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="readOnly">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>310</x>
+        <y>40</y>
+        <width>21</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>dt:</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>

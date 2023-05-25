@@ -29,7 +29,7 @@ def processTwoCfile(filepath: str, scalefactor: float = 1) -> Tuple[List, List]:
     return data[:, 0], data[:, 1] * scalefactor
 
 
-def processOneCfile(filepath: str, dt: float, scalefactor: float = 1) -> Tuple[List, List]:
+def processOneCfile(filepath: str, dt: float, scalefactor: float = 1) -> Tuple[List, List, float]:
     """
     This function process acceleration history data saved in One column format.
 
@@ -55,7 +55,7 @@ def processOneCfile(filepath: str, dt: float, scalefactor: float = 1) -> Tuple[L
     file.close()
     accel = [float(line.split('\n')[0]) * scalefactor for line in lines]
     time = [i * dt for i in range(len(accel))]
-    return time, accel
+    return time, accel, dt
 
 
 def processNGAfile(filepath, scalefactor: float = 1):
