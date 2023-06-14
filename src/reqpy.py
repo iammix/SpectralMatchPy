@@ -78,40 +78,62 @@ convolution in the frequency domain
 
 '''
 
+__all__ = ['REQPYrotdnn']
+
 
 def REQPYrotdnn(s1, s2, fs, dso, To, nn, T1=0, T2=0, zi=0.05, nit=15, NS=100,
                 baseline=1, plots=1):
-    '''   
-    REQPYrotdnn   - Response spectral matching of horizontal ground motion 
+    """
+    Response spectral matching of horizontal ground motion
     components to an orientation-independent spectrum (RotDnn)
-             
-    Input:
+
+    Parameters
+    ----------
+    s1,s2: List
+        seed records (acceleration time series in g's)
+    fs: float
+        seed records samplig frequnecy (Hz)
+    dso: float
+        design/target spectrum (g)
+    To: float
+        vector with the periods at which DS is defined
+    nn: float
+        percentile at which record is defined rotdnn (e.g. rotd100, rotd50)
+    T1, T2: float
+        define period range for matching
+            (defautl T1=T2=0 matches the whole spectrum)
+    zi: float
+        damping ratio for response spectrum (default 5%)
+    nit: int
+        number of iterations (default 15)
+    NS: int
+        number of scale values to perform the CWT (default 100)
+    baseline: boolean
+        True/False (yes/no, whether baseline correction is performed, default True)
+    plots: boolean
+        True/False (yes/no, whether plots are generated, default True)
         
-        s1,s2: seed records (acceleration time series in g's)
-        fs: seed records samplig frequnecy (Hz) 
-        dso: design/target spectrum (g)
-        To: vector with the periods at which DS is defined
-        nn: percentile at which record is defined rotdnn (e.g. rotd100, rotd50)
-        T1, T2: define period range for matching 
-                (defautl T1=T2=0 matches the whole spectrum)
-        zi: damping ratio for response spectrum (default 5%)
-        nit: number of iterations (default 15)
-        NS: number of scale values to perform the CWT (default 100)
-        baseline: 1/0 (yes/no, whether baseline correction is performed, default 1)
-        plots: 1/0 (yes/no, whether plots are generated, default 1)
         
-        
-    Returns:
-        scc1,scc2: spectrally equivalent records (dirs 1 and 2, vectors, g)
-        cvel1,cvel2: velocity time histories (dirs 1 and 2, vectors, vel/g)
-        cdisp1,cdisp2: displacement time histories (dirs 1 and 2, vectors, displ./g)
-        PSArotnn: PSArotnn spectrum for the spectrally matched components (vector, g)
-        PSArotnnor: PSArotnnor spectrum for the original components components (vector, g)
-        T: periods for PSA (vector, s)
-        rmsefin: root mean squared error (float, %)
-        meanefin: average misfit (float, %)
-    
-    '''
+    Returns
+    -------
+    scc1, scc2: List
+        spectrally equivalent records (dirs 1 and 2, g)
+    cvel1, cvel2: List
+        velocity time histories (dirs 1 and 2, vel/g)
+    cdisp1,cdisp2: List
+        displacement time histories (dirs 1 and 2, displ./g)
+    PSArotnn: List
+        PSArotnn spectrum for the spectrally matched components
+    PSArotnnor: List
+        PSArotnnor spectrum for the original components components
+    T: List
+        periods for PSA
+    rmsefin: float
+        root mean squared error
+    meanefin: float
+        average misfit
+
+    """
     import numpy as np
     from scipy import integrate
 
@@ -445,7 +467,7 @@ def REQPY_single(s, fs, dso, To, T1=0, T2=0, zi=0.05, nit=30, NS=100, baseline=1
         dif = np.abs(hPSAbc[Tlocs, m] - ds[Tlocs]) / ds[Tlocs]
         meane[m] = np.mean(dif) * 100
         rmse[m] = np.linalg.norm(dif) / np.sqrt(nTlocs) * 100
-        progress_bar_object.setValue((m/nit)*100)
+        progress_bar_object.setValue((m / nit) * 100)
 
     brloc = np.argmin(rmse)  # locates min error
     sc = ns[:, brloc]  # compatible record

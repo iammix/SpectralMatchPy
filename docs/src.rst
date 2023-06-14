@@ -6,6 +6,14 @@ utilities
    :undoc-members:
    :show-inheritance:
 
+reqpy
+--------------------
+
+.. automodule:: src.reqpy
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

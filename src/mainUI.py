@@ -1,14 +1,13 @@
-import os
 import sys
+
 import numpy as np
 from PyQt6 import QtWidgets, uic
-from PyQt6.QtWidgets import QWidget, QComboBox, QDialog, QFormLayout, QLineEdit, QMessageBox
+from PyQt6.QtWidgets import QDialog, QMessageBox
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-# from matplotlib.backends.qt_compat import QtWidgets
 from matplotlib.figure import Figure
-import utilities
-import reqpy
 
+import reqpy
+import utilities
 
 
 def remove_widget_from_layout(layout):
@@ -90,8 +89,6 @@ class MainUI(QtWidgets.QMainWindow):
         # TODO Export fitted data
         # labels: enhancement
         # assignees: iammix
-
-
 
         self.progressBar.setValue(0)
         fs = 1 / (self.time[1] - self.time[0])
