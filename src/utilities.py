@@ -1,6 +1,131 @@
 import numpy as np
+from typing import List, Tuple, Any
+from numpy import ndarray
+import matplotlib.pyplot as plt
 
-def ec8_rs(agr, ground_type, resp_type, orientation='horizontal', importance_class=2, damping=5, periods=None):
+__all__ = ['ec8_rs', 'processNGAfile', 'processTwoCfile', 'processOneCfile']
+
+
+def processTwoCfile(filepath: str, scalefactor: float = 1) -> Tuple[List, List]:
+    """
+    This function process acceleration history data saved in Two column format.
+
+
+    Parameters
+    ----------
+    filepath : str
+        File path in order to read the file data
+    scalefactor : float
+        Scale factor in which the acceleration values will be multiplied.
+
+    Returns
+    -------
+    time : List
+        A list of time intervals
+    accel : List
+        A list of acceleration data points
+    """
+    data = np.loadtxt(filepath)
+    return data[:, 0], data[:, 1] * scalefactor
+
+
+def processOneCfile(filepath: str, dt: float, scalefactor: float = 1) -> Tuple[List, List, float]:
+    """
+    This function process acceleration history data saved in One column format.
+
+    Parameters
+    ----------
+    filepath : str
+        File path in order to read the file data
+    dt : float
+        Time interval of the acceleration history data
+    scalefactor : float
+        Scale factor in which the acceleration values will be multiplied.
+
+    Returns
+    -------
+    time : List
+        A list of time intervals
+    accel : List
+        A list of acceleration data points
+
+    """
+    with open(filepath, 'r') as file:
+        lines = file.readlines()
+    file.close()
+    accel = [float(line.split('\n')[0]) * scalefactor for line in lines]
+    time = [i * dt for i in range(len(accel))]
+    return time, accel, dt
+
+
+def processNGAfile(filepath, scalefactor: float = 1):
+    """
+    This function process acceleration history for NGA data file (.AT2 format)
+    to a single column value and return the total number of data points and time interval of the recording.
+
+    Parameters
+    ----------
+    filepath : str
+        File path in order to read the file data
+    scalefactor : float
+        Scale factor in which the acceleration values will be multiplied.
+
+    Returns
+    -------
+    time : List
+        A list of time intervals
+    accel : List
+        A list of acceleration data points
+    """
+    with open(filepath, 'r') as file:
+        lines = file.readlines()
+    file.close()
+    accel = []
+    time = []
+    dt_line = lines[3].split(' ')
+    dt_line = [item for item in dt_line if item != '']
+    dt = float(dt_line[1])
+    time_counter = 0
+    for value in lines[4:]:
+        data = value.split(' ')
+        data = [item for item in data if item != '']
+        for dat in data:
+            accel.append(float(dat) * scalefactor)
+            time.append(dt * time_counter)
+            time_counter += 1
+    return time, accel, dt
+
+
+def ec8_rs(agr: int, ground_type: str, resp_type: int, orientation: str = 'horizontal', importance_class: int = 2,
+           damping: float = 5, periods: List = None) -> tuple[Any, ndarray]:
+    """
+    Calculates the Design Spectrum of Eurocode 8 given the corresponding inputs [CT].
+
+    Parameters
+    ----------
+    agr : int
+        Peak Ground Acceleration
+    ground_type : str
+        Ground type. Selection between A, B, C, D
+    resp_type : int
+        Type of spectrum. Selection between 1 or 2
+    orientation : str
+        horizontal orientation is only implemented
+    importance_class : int
+        Importance class
+    damping : float
+        Damping ration for the design spectrum generation
+    periods
+
+    Returns
+    -------
+    periods : List
+        List of periods
+    PGA : List
+        List of Peak Ground Acceleration corresponding to the period list
+
+    """
+
     importance_factor = {1: 0.8,
                          2: 1,
                          3: 1.2,
