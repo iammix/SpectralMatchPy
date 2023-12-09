@@ -25,7 +25,7 @@ pefile==2023.2.7
 Pillow==9.5.0
 pydata-sphinx-theme==0.13.3
 Pygments==2.15.1
-pyinstaller==5.11.0
+pyinstaller==5.13.1
 pyinstaller-hooks-contrib==2023.3
 pyparsing==3.0.9
 PyQt6==6.5.0
